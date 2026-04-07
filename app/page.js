@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs/react";
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
