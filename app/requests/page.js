@@ -17,20 +17,25 @@ export default function RequestsPage() {
       .then(({ data }) => setRequests((data || []).filter(r => r.resources !== null)))
   }, [user])
 
-  const handleAction = async (id, action) => {
-    await supabase.from('borrow_requests').update({ status: action }).eq('id', id)
-    if (action === 'approved') {
-      const req = requests.find(r => r.id === id)
-      await supabase.from('transactions').insert([{
-        request_id: id,
-        borrow_date: req.request_date,
-        due_date: req.return_date,
-        status: 'active'
-      }])
-      await supabase.from('resources').update({ status: 'unavailable' }).eq('id', req.resource_id)
-    }
-    setRequests(requests.map(r => r.id === id ? { ...r, status: action } : r))
+const handleAction = async (id, action) => {
+  await supabase.from('borrow_requests').update({ status: action }).eq('id', id)
+  if (action === 'approved') {
+    const req = requests.find(r => r.id === id)
+    await supabase.from('transactions').insert([{
+      request_id: id,
+      borrow_date: req.request_date,
+      due_date: req.return_date,
+      status: 'active'
+    }])
+    await supabase.from('resources').update({ status: 'unavailable' }).eq('id', req.resource_id)
   }
+  setRequests(requests.map(r => r.id === id ? { ...r, status: action } : r))
+  await fetch('/api/notify-status', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requestId: id, status: action })
+  })
+}
 
   const statusColor = s => ({ pending: 'bg-yellow-100 text-yellow-700', approved: 'bg-green-100 text-green-600', rejected: 'bg-red-100 text-red-400' }[s])
 
