@@ -1,14 +1,30 @@
 import Link from 'next/link'
-
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       {/* Navbar */}
       <nav className="flex items-center justify-between px-8 py-4 border-b border-gray-100">
         <h1 className="text-2xl font-bold text-yellow-500">🐝 BorrowBee</h1>
-        <div className="flex gap-4">
-          <Link href="/browse" className="text-gray-600 hover:text-gray-900">Browse</Link>
-          <Link href="/sign-in" className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium">Sign In</Link>
+        <div className="flex gap-4 items-center">
+          <Link href="/browse" className="text-gray-600 hover:text-gray-900">
+            Browse
+          </Link>
+
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium">
+                Sign In
+              </button>
+            </SignInButton>
+          </SignedOut>
+
+          <SignedIn>
+            <Link href="/dashboard" className="text-gray-700 font-medium">
+              Dashboard
+            </Link>
+            <UserButton />
+          </SignedIn>
         </div>
       </nav>
 
@@ -20,7 +36,13 @@ export default function Home() {
         </p>
         <div className="flex gap-4 justify-center">
           <Link href="/browse" className="bg-yellow-400 hover:bg-yellow-500 text-white px-8 py-3 rounded-xl font-semibold text-lg">Browse Tools</Link>
-          <Link href="/sign-up" className="border border-gray-200 hover:bg-gray-50 px-8 py-3 rounded-xl font-semibold text-lg text-gray-700">List Your Tool</Link>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="border border-gray-200 hover:bg-gray-50 px-8 py-3 rounded-xl font-semibold text-lg text-gray-700">
+                List Your Tool
+              </button>
+            </SignInButton>
+          </SignedOut>
         </div>
       </section>
 
